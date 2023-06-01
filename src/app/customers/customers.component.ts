@@ -13,7 +13,7 @@ import { HttpClient } from '@angular/common/http';
 export class CustomersComponent implements OnInit {
   customers!:Observable<Array<Customer>>
   errorMessage!:object
-  searchformGroup:FormGroup | undefined
+  searchformGroup!:FormGroup
 
   constructor(private customerService:CustomersService, private fb:FormBuilder) { }
   ngOnInit() {
@@ -31,6 +31,5 @@ export class CustomersComponent implements OnInit {
         return throwError(err);
       })
     );
-    console.log(this.customers);
   }
 }

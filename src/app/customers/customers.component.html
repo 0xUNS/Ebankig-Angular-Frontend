@@ -2,49 +2,67 @@
 	<h1 class="text-4xl font-bold text-white">Custormers</h1>
 	<p class="tracking-normal md:text-lg text-gray-400">List of customers</p>
 </div>
-<a href="#" class="inline-flex justify-between items-center py-1 px-1 pr-4 mb-7 text-sm rounded-full bg-blue-900 text-blue-300 hover:bg-blue-800">
-	<span class="text-xs bg-blue-600 rounded-full text-white px-4 py-1.5 mr-3">New</span> <span class="text-sm font-medium">Add new customer</span> 
-	<svg aria-hidden="true" class="ml-2 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-</a>
-
+<div class="flex flex-wrap my-5 place-content-between">
+	<a href="#" class="inline-flex justify-between items-center py-1 pl-1 pr-4 text-sm rounded-full bg-blue-900 text-blue-300 hover:bg-blue-800">
+		<span class="text-xs bg-blue-600 rounded-full text-white px-4 py-1.5 mr-3">New</span> <span class="text-sm font-medium">Add new customer</span> 
+		<svg aria-hidden="true" class="ml-2 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+	</a>
+	<form [formGroup]="searchformGroup" (ngSubmit)="handleSearchCustomers()" class="flex-auto max-w-sm">   
+		<label for="default-search" class="mb-2 text-sm font-medium sr-only text-white">Search</label>
+		<div class="relative">
+        <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+            <i class="text-gray-400 bi bi-search"></i>
+        </div>
+        <input type="search" formControlName="keyword" id="default-search" class="block w-full px-4 pl-10 text-sm border rounded-full bg-gray-800 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500 bg-opacity-40 bg-clip-padding" placeholder="Search for a customer..." required>
+        <button type="submit" class="text-white absolute right-2.5 bottom-1 focus:ring-4 focus:outline-none font-medium rounded-full text-sm px-4 py-1 bg-blue-600 hover:bg-blue-700 focus:ring-blue-800">Search</button>
+    	</div>
+	</form>
+</div>
 
 <ng-container *ngIf="customers | async as listCustomers; else failureOrLading">
-	<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-		<div *ngFor="let c of customers | async" class="w-full max-w-sm border rounded-lg shadow bg-gray-800 border-gray-700 bg-opacity-20 bg-clip-padding" style="backdrop-filter: blur(60px);">
-			<div class="flex justify-end px-4 pt-4">
-				<button id="dropdownButton" data-dropdown-toggle="dropdown" class="inline-block text-gray-400 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-700 rounded-lg text-sm p-1.5" type="button">
-					<span class="sr-only">Open dropdown</span>
-					<i class="text-2xl bi bi-three-dots"></i>
-				</button>
-				<!-- Dropdown menu -->
-				<div id="dropdown" class="z-10 hidden text-base list-none divide-y divide-gray-100 rounded-lg shadow w-44 bg-gray-700">
-					<ul class="py-2" aria-labelledby="dropdownButton">
-					<li>
-						<a href="#" class="block px-4 py-2 text-sm hover:bg-gray-600 text-gray-200 hover:text-white">Edit</a>
-					</li>
-					<li>
-						<a href="#" class="block px-4 py-2 text-sm hover:bg-gray-600 text-gray-200 hover:text-white">Export Data</a>
-					</li>
-					<li>
-						<a href="#" class="block px-4 py-2 text-sm hover:bg-gray-600 text-gray-200 hover:text-white">Delete</a>
-					</li>
-					</ul>
+	<ng-container *ngIf="listCustomers.length>0; else emtyList">
+		<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+			<div *ngFor="let c of listCustomers" class="w-full max-w-sm border rounded-lg shadow bg-gray-800 border-gray-700 bg-opacity-20 bg-clip-padding" style="backdrop-filter: blur(60px);">
+				<div class="flex justify-end px-4 pt-4">
+					<button id="dropdownButton" data-dropdown-toggle="dropdown" class="inline-block text-gray-400 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-700 rounded-lg text-sm p-1.5" type="button">
+						<span class="sr-only">Open dropdown</span>
+						<i class="text-2xl bi bi-three-dots"></i>
+					</button>
+					<!-- Dropdown menu -->
+					<div id="dropdown" class="z-10 hidden text-base list-none divide-y divide-gray-100 rounded-lg shadow w-44 bg-gray-700">
+						<ul class="py-2" aria-labelledby="dropdownButton">
+						<li>
+							<a href="#" class="block px-4 py-2 text-sm hover:bg-gray-600 text-gray-200 hover:text-white">Edit</a>
+						</li>
+						<li>
+							<a href="#" class="block px-4 py-2 text-sm hover:bg-gray-600 text-gray-200 hover:text-white">Export Data</a>
+						</li>
+						<li>
+							<a href="#" class="block px-4 py-2 text-sm hover:bg-gray-600 text-gray-200 hover:text-white">Delete</a>
+						</li>
+						</ul>
+					</div>
 				</div>
-			</div>
-			<div class="flex flex-col items-center pb-10">
-				<!-- <img class="object-cover w-24 h-24 rounded-full shadow-lg" src="/assets/images/profiles/profile-picture-3.png" alt="Bonnie image" loading="lazy"/> -->
-				<div class="relative inline-flex items-center justify-center w-24 h-24 mb-3 overflow-hidden rounded-full bg-gray-600">
-					<span class="font-medium text-3xl text-gray-300">JL</span>
-				</div>
-				<h5 class="mb-1 text-xl font-medium text-white">{{c.name}}</h5>
-				<span class="text-sm text-gray-400">{{c.email}}</span>
-				<div class="flex mt-4 space-x-3 md:mt-6">
-					<a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white rounded-lg focus:ring-4 focus:outline-none bg-blue-600 hover:bg-blue-700 focus:ring-blue-800">Add friend</a>
-					<a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center border rounded-lg focus:ring-4 focus:outline-none bg-gray-800 text-white border-gray-600 hover:bg-gray-700 hover:border-gray-700 focus:ring-gray-700">Message</a>
+				<div class="flex flex-col items-center pb-10">
+					<!-- <img class="object-cover w-24 h-24 rounded-full shadow-lg" src="/assets/images/profiles/profile-picture-3.png" alt="Bonnie image" loading="lazy"/> -->
+					<div class="relative inline-flex items-center justify-center w-24 h-24 mb-3 overflow-hidden rounded-full bg-gray-600">
+						<span class="font-medium text-3xl text-gray-300">JL</span>
+					</div>
+					<h5 class="mb-1 text-xl font-medium text-white">{{c.name}}</h5>
+					<span class="text-sm text-gray-400">{{c.email}}</span>
+					<div class="flex mt-4 space-x-3 md:mt-6">
+						<a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white rounded-lg focus:ring-4 focus:outline-none bg-blue-600 hover:bg-blue-700 focus:ring-blue-800">Add friend</a>
+						<a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center border rounded-lg focus:ring-4 focus:outline-none bg-gray-800 text-white border-gray-600 hover:bg-gray-700 hover:border-gray-700 focus:ring-gray-700">Message</a>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
+	</ng-container>
+	<ng-template #emtyList>
+		<div class="p-4 mb-4 border rounded-lg bg-gray-800 text-gray-400 border-gray-700 bg-opacity-20 bg-clip-padding text-center" style="backdrop-filter: blur(60px);" role="alert">
+			<div class="mt-4 mb-8 text-lg"><i class="bi bi-view-list"></i> Custumers list is empty</div>
+		</div>
+	</ng-template>
 </ng-container>
 <ng-template #failureOrLading>
 	<ng-container *ngIf="errorMessage; else loading">
@@ -58,7 +76,7 @@
 		</div>
 	</ng-container>
 	<ng-template #loading>
-		<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+		<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
 			<div *ngFor="let i of [1,2,3,4]" class="w-full max-w-sm border rounded-lg shadow bg-gray-800 border-gray-700 bg-opacity-20 bg-clip-padding" style="backdrop-filter: blur(60px);">
 				<div class="flex justify-end px-4 pt-6">
 					<i class="text-2xl text-gray-400 bi bi-three-dots"></i>
