@@ -8,13 +8,15 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { HeaderComponent } from './header/header.component';
 import { CustomersComponent } from './customers/customers.component';
 import { AccountsComponent } from './accounts/accounts.component';
+import { CustomerNewComponent } from './customer-new/customer-new.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     CustomersComponent,
-    AccountsComponent
+    AccountsComponent,
+    CustomerNewComponent
   ],
   imports: [
     BrowserModule,

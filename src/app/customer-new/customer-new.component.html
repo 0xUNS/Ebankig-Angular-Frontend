@@ -1,0 +1,36 @@
+<div class="p-5">
+	<h1 class="text-4xl font-bold text-white">Custormers</h1>
+	<p class="tracking-normal md:text-lg text-gray-400">Add new customer</p>
+</div>
+
+<div class="flex justify-center">
+	<div class="w-full max-w-md border rounded-lg shadow p-6 bg-gray-800 border-gray-700 bg-opacity-40 bg-clip-padding" style="backdrop-filter: blur(60px);">
+		<form class="space-y-6" [formGroup]="newCustomerFormGroup" (ngSubmit)="handleSaveCustomer()">
+			<h5 class="text-xl font-medium text-white">Add customer</h5>
+			<div>
+				<label for="customer" class="block mb-2 text-sm font-medium text-white ml-5">Name</label>
+				<input type="text" formControlName="name" id="customer" placeholder="name" class="border text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-600 border-gray-500 placeholder-gray-400 text-white px-5 bg-opacity-20 bg-clip-padding" style="backdrop-filter: blur(60px);" required>
+				<span class="italic text-red-500 text-sm ml-5"
+					*ngIf="newCustomerFormGroup.controls['name'].touched
+					&& newCustomerFormGroup.controls['name'].errors
+					&& newCustomerFormGroup.controls['name'].errors!['required']">
+					Name is Required .
+				</span>
+			</div>
+			<div>
+				<label for="email" class="block mb-2 text-sm font-medium text-white ml-5">E-mail</label>
+				<input type="email" formControlName="email" id="email" class="border text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-600 border-gray-500 placeholder-gray-400 text-white px-5 bg-opacity-20 bg-clip-padding" style="backdrop-filter: blur(60px);" placeholder="name@company.com" required>
+				<span class="italic text-red-500 text-sm ml-5"
+					*ngIf="newCustomerFormGroup.controls['email'].touched
+					&& newCustomerFormGroup.controls['email'].errors
+					&& newCustomerFormGroup.controls['email'].errors!['email']">
+					Email is not valid .
+				</span>
+			</div>
+			<div class="flex place-content-evenly">
+				<button type="submit" [disabled]="!newCustomerFormGroup.valid" class="basis-1/2 px-4 py-2 text-sm font-medium text-center text-white rounded-full focus:ring-4 focus:outline-none bg-blue-600 hover:bg-blue-700 focus:ring-blue-800">Submit</button>
+				<button type="reset" class="basis-1/4 px-4 py-2 text-sm font-medium text-center border rounded-full focus:ring-4 focus:outline-none bg-gray-800 text-white border-gray-600 hover:bg-gray-700 hover:border-gray-700 focus:ring-gray-700">Reset</button>
+			</div>
+		</form>
+	</div>
+</div>
