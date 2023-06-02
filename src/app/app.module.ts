@@ -9,6 +9,7 @@ import { HeaderComponent } from './header/header.component';
 import { CustomersComponent } from './customers/customers.component';
 import { AccountsComponent } from './accounts/accounts.component';
 import { CustomerNewComponent } from './customer-new/customer-new.component';
+import { CustomerAccountsComponent } from './customer-accounts/customer-accounts.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { CustomerNewComponent } from './customer-new/customer-new.component';
     HeaderComponent,
     CustomersComponent,
     AccountsComponent,
-    CustomerNewComponent
+    CustomerNewComponent,
+    CustomerAccountsComponent
   ],
   imports: [
     BrowserModule,
