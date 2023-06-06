@@ -3,7 +3,6 @@ import { Observable, catchError, map, throwError } from 'rxjs';
 import { CustomersService } from '../services/customers.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Customer } from '../model/customer.model';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 @Component({
@@ -32,6 +31,7 @@ export class CustomersComponent implements OnInit {
         return throwError(err)
       })
     )
+    console.log(this.customers)
   }
   
   handleDeleteCustomer(customer: Customer) {

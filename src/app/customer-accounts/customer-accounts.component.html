@@ -1,5 +1,115 @@
-<div class="bg-yellow-300">
-	<div>{{customerId}}</div>
-	<div>{{customer | json}}</div>
-  </div>
-  
+<div class="p-5">
+	<h1 class="text-4xl font-bold text-white">Custormer</h1>
+	<p class="tracking-normal md:text-lg text-gray-400">List of accounts</p>
+</div>
+
+<ng-container *ngIf="customerAccounts | async as customer; else failureOrLading">
+    <div class="bg-gray-800 border border-gray-700 flex items-center px-6 py-4 rounded-lg whitespace-nowrap text-white bg-opacity-60 bg-clip-padding" style="backdrop-filter: blur(60px);">
+        <div class="relative inline-flex items-center justify-center w-10 h-10 mb-3 overflow-hidden rounded-full bg-gray-600">
+            <span class="font-medium text-md text-gray-300">JL</span>
+        </div>
+        <div class="pl-3">
+            <div class="font-normal text-gray-500"> # {{customer.id}}</div>
+            <div class="text-base font-semibold">{{customer.name}}</div>
+        </div>
+        <span class="inline-flex items-center text-xs font-medium ml-8 px-2.5 py-0.5 rounded-full bg-green-900 text-green-300">
+            <span class="w-2 h-2 mr-1 bg-green-500 rounded-full"></span>
+            Available
+        </span>
+    </div>
+    <div class="relative overflow-y-hidden shadow-md rounded-lg border border-gray-700 mt-5">
+        <table class="w-full text-sm text-left text-gray-400">
+            <thead class="text-xs uppercase bg-gray-700 text-gray-400">
+                <tr>
+                    <th scope="col" class="px-6 py-3">
+                        # ID
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Type
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Balance
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Creation Date
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Status
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Over Draft / Interest Rate
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let account of customer.bankAccounts" class="border-b bg-gray-800 border-gray-700 hover:bg-gray-600">
+                    <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap text-white">
+                        {{account.id}}
+                    </th>
+                    <td *ngIf="account.type == 'CurrentAccount'" class="text-yellow-300 px-6 py-4">
+                        <i class="text-lg bi bi-credit-card-2-front-fill"></i> Current Account
+                    </td>
+                    <td *ngIf="account.type == 'SavingAccount'" class="text-blue-300 px-6 py-4">
+                        <i class="text-lg bi bi-credit-card"></i> Saving Account
+                    </td>
+                    <td class="px-6 py-4">
+                        {{account.balance | number : '1.2-2'}}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{account.createdAt | date : 'dd-MM-yyyy &bull; HH:mm'}}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{account.status}}
+                    </td>
+                    <td *ngIf="account.type == 'CurrentAccount'" class="text-yellow-300 px-6 py-4">
+                        {{account.overDraft}} MAD
+                    </td>
+                    <td *ngIf="account.type == 'SavingAccount'" class="text-blue-300 px-6 py-4">
+                        {{account.interestRate}} %
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <nav class="flex items-center justify-between py-2 px-6" aria-label="Table navigation">
+            <span class="text-sm font-normal text-gray-400">Showing <span class="font-semibold text-white">{{customer.currentPage * customer.pageSize + 1}}-{{customer.currentPage * customer.pageSize + customer.currentPageAccounts}}</span> of <span class="font-semibold text-white">{{customer.totalAccounts}}</span></span>
+            <ul *ngIf="customer.totalPages > 1" class="inline-flex items-center -space-x-px">
+                <li *ngIf="customer.currentPage > 0">
+                    <a (click)="gotoPage(customer.currentPage - 1)" class="block px-3 py-2 ml-0 leading-tight border rounded-l-lg bg-gray-800 border-gray-700 text-gray-400 hover:bg-gray-700 hover:text-white">
+                        <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    </a>
+                </li>
+
+                <li *ngIf="customer.currentPage - 1 > 0">
+                    <a class="px-3 py-2 leading-tight border bg-gray-800 border-gray-700 text-gray-400 hover:bg-gray-700 hover:text-white">...</a>
+                </li>
+                <li *ngIf="customer.currentPage > 0">
+                    <a (click)="gotoPage(customer.currentPage - 1)" aria-current="page" class="px-3 py-2 leading-tight border bg-gray-800 border-gray-700 text-gray-400 hover:bg-gray-700 hover:text-white">{{customer.currentPage}}</a>
+                </li>
+                <li>
+                    <a (click)="gotoPage(customer.currentPage)" aria-current="page" class="z-10 px-3 py-2 leading-tight border hover:bg-blue-100 hover:text-blue-700 border-gray-700 bg-gray-700 text-white">{{customer.currentPage + 1}}</a>
+                </li>
+                <li *ngIf="customer.currentPage + 1 < customer.totalPages">
+                    <a (click)="gotoPage(customer.currentPage + 1)" aria-current="page" class="px-3 py-2 leading-tight border bg-gray-800 border-gray-700 text-gray-400 hover:bg-gray-700 hover:text-white">{{customer.currentPage + 2}}</a>
+                </li>
+                <li *ngIf="customer.currentPage + 2 < customer.totalPages">
+                    <a class="px-3 py-2 leading-tight border bg-gray-800 border-gray-700 text-gray-400 hover:bg-gray-700 hover:text-white">...</a>
+                </li>
+
+                <li *ngIf="customer.currentPage + 1 < customer.totalPages">
+                    <a (click)="gotoPage(customer.currentPage + 1)" class="block px-3 py-2 leading-tight border rounded-r-lg bg-gray-800 border-gray-700 text-gray-400 hover:bg-gray-700 hover:text-white">
+                        <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</ng-container>
+
+<ng-template #failureOrLading>
+    <ng-container *ngIf="errorMessage ; else loading">
+      <div class="text-danger">{{errorMessage}}</div>
+    </ng-container>
+    <ng-template #loading>
+      Loading ...
+    </ng-template>
+</ng-template>

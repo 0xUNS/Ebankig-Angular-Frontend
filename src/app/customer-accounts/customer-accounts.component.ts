@@ -1,21 +1,42 @@
-import { Component } from '@angular/core';
-import { Customer } from '../model/customer.model';
+import { Component, OnInit } from '@angular/core';
+import { Customer, CustomerAccounts } from '../model/customer.model';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AccountsService } from '../services/accounts.service';
+import { Observable, catchError, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-customer-accounts',
   templateUrl: './customer-accounts.component.html',
-  styleUrls: ['./customer-accounts.component.css']
+  styleUrls: ['./customer-accounts.component.css'],
 })
-export class CustomerAccountsComponent {
-  customerId! : string
-  customer! : Customer
-  
-  constructor(private route : ActivatedRoute) {
+export class CustomerAccountsComponent implements OnInit {
+  customerId: string = this.route.snapshot.params['id'];
+  customer!: Customer;
+  customerAccounts!: Observable<CustomerAccounts>;
+  currentPage: number = 0;
+  pageSize: number = 5;
+  errorMessage!: string;
 
-  }
+  constructor(
+    private accountsService: AccountsService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
-    this.customerId = this.route.snapshot.params['id']
+    this.getAccounts();
+  }
+
+  private getAccounts() {
+    this.customerAccounts = this.accountsService.getCustomerAccounts(this.customerId, this.currentPage, this.pageSize).pipe(
+      catchError((err) => {
+        this.errorMessage = err.message;
+        return throwError(err);
+      })
+    );
+  }
+
+  gotoPage(page: number) {
+    this.currentPage = page;
+    this.getAccounts();
   }
 }

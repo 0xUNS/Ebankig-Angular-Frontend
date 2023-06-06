@@ -22,23 +22,23 @@
 <ng-container *ngIf="customers | async as listCustomers; else failureOrLading">
 	<ng-container *ngIf="listCustomers.length>0; else emtyList">
 		<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-			<div *ngFor="let c of listCustomers" class="w-full max-w-sm border rounded-lg shadow bg-gray-800 border-gray-700 bg-opacity-20 bg-clip-padding" style="backdrop-filter: blur(60px);">
+			<div *ngFor="let c of listCustomers; let i = index" class="w-full max-w-sm border rounded-lg shadow bg-gray-800 border-gray-700 bg-opacity-20 bg-clip-padding" style="backdrop-filter: blur(60px);">
 				<div class="flex justify-end px-4 pt-4">
-					<button id="dropdownButton{{c.id}}" data-dropdown-toggle="dropdown" class="inline-block text-gray-400 hover:ring-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-700 rounded-lg text-sm px-2 " type="button">
+					<button id="dropdownButton{{i}}" data-dropdown-toggle="dropdown5" class="inline-block text-gray-400 hover:ring-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-700 rounded-lg text-sm px-2 " type="button">
 						<span class="sr-only">Open dropdown</span>
 						<i class="text-2xl bi bi-three-dots"></i>
 					</button>
 					<!-- Dropdown menu -->
-					<div id="dropdown" class="z-10 hidden text-base list-none divide-y divide-gray-100 rounded-lg shadow w-44 bg-gray-700">
+					<div id="dropdown{{i}}" class="z-10 hidden text-base list-none divide-y divide-gray-100 rounded-lg shadow w-44 bg-gray-700">
 						<ul class="py-2" aria-labelledby="">
 						<li>
-							<a href="#" class="block px-4 py-2 text-sm hover:bg-gray-600 text-gray-200 hover:text-white">Edit</a>
+							<a href="#" class="block px-4 py-2 text-sm hover:bg-gray-600 text-gray-200 hover:text-white">Edit{{i}}</a>
 						</li>
 						<li>
 							<a href="#" class="block px-4 py-2 text-sm hover:bg-gray-600 text-gray-200 hover:text-white">Export Data</a>
 						</li>
 						<li>
-							<a href="#" class="block px-4 py-2 text-sm hover:bg-gray-600 text-gray-200 hover:text-white">Delete</a>
+							<a href="#" class="block px-4 py-2 text-sm hover:bg-gray-600 text-red-500">Delete</a>
 						</li>
 						</ul>
 					</div>
