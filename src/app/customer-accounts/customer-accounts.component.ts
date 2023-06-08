@@ -26,7 +26,7 @@ export class CustomerAccountsComponent implements OnInit {
     this.getAccounts();
   }
 
-  private getAccounts() {
+  getAccounts() {
     this.customerAccounts = this.accountsService.getCustomerAccounts(this.customerId, this.currentPage, this.pageSize).pipe(
       catchError((err) => {
         this.errorMessage = err.message;

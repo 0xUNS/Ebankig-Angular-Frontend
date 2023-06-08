@@ -1,95 +1,251 @@
-<div class="container mt-2 bg-yellow-200">
-	<div class="row">
-	  <div class="col col-md-6">
-		<div class="card">
-		  <div class="card-header">Accounts</div>
-		  <div class="card-body">
-			<form [formGroup]="accountFormGroup" (ngSubmit)="handleSearchAccount()">
-			  <div class="input-group">
-				<label class="input-group-text">Account Id :</label>
-				<input type="text" formControlName="accountId" class="form-control">
-				<button class="btn btn-info bg-green-500">
-				  <i class="bi bi-search"></i>
-				  Search
-				</button>
-			  </div>
-			</form>
-			<ng-template #errorTemplate>
-			  <ng-container *ngIf="errorMessage ; else loading">
-				<div class="text-danger">{{errorMessage}}</div>
-			  </ng-container>
-			  <ng-template #loading>
-				Loading ...
-			  </ng-template>
-			</ng-template>
-			<ng-container *ngIf="accountObservable | async as accountDetails">
-			  <div class="mb-2">
-				<label>Account ID :</label>
-				<label><strong>{{accountDetails.accountId}}</strong></label>
-			  </div>
-			  <div class="mb-2">
-				<label>Balance :</label>
-				<label><strong>{{accountDetails.balance | number : '1.2-2'}}</strong></label>
-			  </div>
-			  <table class="table bg-blue-500">
-				<thead>
-				  <th>ID</th><th>Date</th><th>Type</th><th>Amount</th>
-				</thead>
-				<tbody>
-				  <tr *ngFor="let op of accountDetails.accountOperationDTOS">
-					<td>{{op.id}}</td>
-					<td>{{op.operationDate | date : 'dd-MM-yyyy:HH-mm-ss'}}</td>
-					<td>{{op.type}}</td>
-					<td class="text-end">{{op.amount | number : '1.2-2'}}</td>
-				  </tr>
-				</tbody>
-			  </table>
-			  <ul class="nav nav-pills">
-				<li *ngFor="let item of [].constructor(accountDetails.totalPages);let page=index">
-				  <a [ngClass]="page==currentPage?'btn-info':'btn-outline-info'" (click)="gotoPage(page)" class="btn  ms-1 mt-1 bg-blue-500">{{page}}</a>
-				</li>
-			  </ul>
-			</ng-container>
-		  </div>
-		</div>
-	  </div>
-	  <div class="col col-md-6">
-		<div class="card" *ngIf="accountObservable">
-		  <div class="card-header">Operations</div>
-		  <div class="card-body">
-  
-			<form [formGroup]="operationFromGroup" (ngSubmit)="handleAccountOperation()" method="post">
-			  <div class="form-check form-check-inline">
-				<input class="form-check-input" type="radio" formControlName="operationType" value="DEBIT">
-				<label class="form-check-label">DEBIT:</label>
-			  </div>
-			  <div class="form-check form-check-inline">
-				<input class="form-check-input" type="radio" formControlName="operationType" value="CREDIT">
-				<label class="form-check-label">CREDIT:</label>
-			  </div>
-			  <div class="form-check form-check-inline">
-				<input class="form-check-input" type="radio" formControlName="operationType" value="TRANSFER">
-				<label class="form-check-label">TRANSFER:</label>
-			  </div>
-			  <div class="mb-3" *ngIf="operationFromGroup.value.operationType=='TRANSFER'">
-				<label class="form-label">Account Destination :</label>
-				<input type="text" formControlName="accountDestination" class="form-control">
-			  </div>
-			  <div class="mb-3">
-				<label class="form-label">Amount :</label>
-				<input type="text" formControlName="amount" class="form-control">
-			  </div>
-			  <div class="mb-3">
-				<label class="form-label">Description :</label>
-				<input type="text" formControlName="description" class="form-control">
-			  </div>
-			  <div class="d-grid mb-3">
-				<button class="btn btn-success bg-green-500">Save Operation</button>
-			  </div>
-			</form>
-		  </div>
-		</div>
-	  </div>
-	</div>
-  </div>
-  
+<div class="p-5">
+    <h1 class="text-4xl font-bold text-white">Accounts</h1>
+    <p class="tracking-normal md:text-lg text-gray-400">List of operations</p>
+</div>
+
+<div class="flex flex-wrap justify-around">
+    <ng-container *ngIf="accountObservable | async as accountDetails; else failureOrLading">
+        <div class="grow m-2">
+            <div class="bg-gray-800 border border-gray-700 flex items-center justify-around px-6 py-4 rounded-lg whitespace-nowrap text-white bg-opacity-60 bg-clip-padding"
+                style="backdrop-filter: blur(60px)">
+                <div class="font-normal text-gray-500">
+                    # {{ accountDetails.accountId }}
+                </div>
+                <div class="text-base font-semibold">
+                    <span class="font-normal text-gray-500 mx-4">Balance :</span>
+                    {{ accountDetails.balance | number : "1.2-2" }}
+                    <span class="font-normal text-gray-500 mx-2">MAD</span>
+                </div>
+            </div>
+            <ng-container *ngIf="accountDetails.accountOperationDTOS.length > 0; else emtyList">
+                <div class="relative overflow-y-hidden shadow-md rounded-lg border border-gray-700 mt-5">
+                    <table class="w-full text-sm text-left text-gray-400">
+                        <thead class="text-xs uppercase bg-gray-700 text-gray-400">
+                            <tr>
+                                <th scope="col" class="px-6 py-3"># ID</th>
+                                <th scope="col" class="px-6 py-3">Operation date</th>
+                                <th scope="col" class="px-6 py-3">Type</th>
+                                <th scope="col" class="px-6 py-3">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let operation of accountDetails.accountOperationDTOS"
+                                class="border-b bg-gray-800 border-gray-700 hover:bg-gray-600">
+                                <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap text-white">
+                                    {{ operation.id }}
+                                </th>
+                                <td *ngIf="operation.type == 'DEBIT'" class="text-red-300 px-6 py-4">
+                                    <i class="text-lg bi bi-arrow-down"></i> Debit
+                                </td>
+                                <td *ngIf="operation.type == 'CREDIT'" class="text-green-300 px-6 py-4">
+                                    <i class="text-lg bi bi-arrow-up"></i> Credit
+                                </td>
+                                <td *ngIf="operation.type == 'TRANSFER'" class="text-blue-300 px-6 py-4">
+                                    <i class="text-lg bi bi-arrow-left-right"></i> Transfer
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{
+                                    operation.operationDate | date : "dd-MM-yyyy &bull; HH:mm"
+                                    }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{ operation.amount | number : "1.2-2" }} MAD
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <nav class="flex items-center justify-between py-2 px-6" aria-label="Table navigation">
+                        <span class="text-sm font-normal text-gray-400">Showing
+                            <span class="font-semibold text-white">{{
+                                accountDetails.currentPage * accountDetails.pageSize + 1
+                                }}-{{
+                                accountDetails.currentPage * accountDetails.pageSize +
+                                accountDetails.currentPageOperations
+                                }}</span>
+                            of
+                            <span class="font-semibold text-white">{{
+                                accountDetails.totalOperations
+                                }}</span></span>
+                        <ul *ngIf="accountDetails.totalPages > 1" class="inline-flex items-center -space-x-px">
+                            <li *ngIf="accountDetails.currentPage > 0">
+                                <a (click)="gotoPage(accountDetails.currentPage - 1)"
+                                    class="block px-3 py-2 ml-0 leading-tight border rounded-l-lg bg-gray-800 border-gray-700 text-gray-400 hover:bg-gray-700 hover:text-white">
+                                    <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </a>
+                            </li>
+
+                            <li *ngIf="accountDetails.currentPage - 1 > 0">
+                                <a
+                                    class="px-3 py-2 leading-tight border bg-gray-800 border-gray-700 text-gray-400 hover:bg-gray-700 hover:text-white">...</a>
+                            </li>
+                            <li *ngIf="accountDetails.currentPage > 0">
+                                <a (click)="gotoPage(accountDetails.currentPage - 1)" aria-current="page"
+                                    class="px-3 py-2 leading-tight border bg-gray-800 border-gray-700 text-gray-400 hover:bg-gray-700 hover:text-white">{{
+                                    accountDetails.currentPage }}</a>
+                            </li>
+                            <li>
+                                <a (click)="gotoPage(accountDetails.currentPage)" aria-current="page"
+                                    class="z-10 px-3 py-2 leading-tight border hover:bg-blue-100 hover:text-blue-700 border-gray-700 bg-gray-700 text-white">{{
+                                    accountDetails.currentPage + 1 }}</a>
+                            </li>
+                            <li *ngIf="
+                  accountDetails.currentPage + 1 < accountDetails.totalPages
+                ">
+                                <a (click)="gotoPage(accountDetails.currentPage + 1)" aria-current="page"
+                                    class="px-3 py-2 leading-tight border bg-gray-800 border-gray-700 text-gray-400 hover:bg-gray-700 hover:text-white">{{
+                                    accountDetails.currentPage + 2 }}</a>
+                            </li>
+                            <li *ngIf="
+                  accountDetails.currentPage + 2 < accountDetails.totalPages
+                ">
+                                <a
+                                    class="px-3 py-2 leading-tight border bg-gray-800 border-gray-700 text-gray-400 hover:bg-gray-700 hover:text-white">...</a>
+                            </li>
+
+                            <li *ngIf="
+                  accountDetails.currentPage + 1 < accountDetails.totalPages
+                ">
+                                <a (click)="gotoPage(accountDetails.currentPage + 1)"
+                                    class="block px-3 py-2 leading-tight border rounded-r-lg bg-gray-800 border-gray-700 text-gray-400 hover:bg-gray-700 hover:text-white">
+                                    <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </ng-container>
+            <ng-template #emtyList>
+                <div class="p-4 mb-4 border rounded-lg bg-gray-800 text-gray-400 border-gray-700 bg-opacity-20 bg-clip-padding text-center"
+                    style="backdrop-filter: blur(60px)" role="alert">
+                    <div class="mt-4 mb-8 text-lg">
+                        <i class="bi bi-view-list"></i> Operation list is empty
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+    </ng-container>
+    <div *ngIf="accountObservable | async"
+        class="shrink m-2 w-full max-w-md border rounded-lg shadow p-6 bg-gray-800 border-gray-700 bg-opacity-40 bg-clip-padding"
+        style="backdrop-filter: blur(60px)">
+        <form class="space-y-6" [formGroup]="operationFromGroup" (ngSubmit)="handleAccountOperation()" method="post">
+            <h5 class="text-xl font-medium text-white">Add operation</h5>
+            <div>
+                <label for="type" class="block mb-2 text-sm font-medium text-white ml-5">Type</label>
+                <ul id="type"
+                    class="items-center w-full text-sm font-medium border rounded-lg sm:flex bg-gray-700 border-gray-600 text-white">
+                    <li class="w-full border-b sm:border-b-0 sm:border-r border-gray-600">
+                        <div class="flex items-center pl-3">
+                            <input id="horizontal-list-radio-debit" type="radio" value="DEBIT"
+                                formControlName="operationType" name="list-radio"
+                                class="w-4 h-4 text-blue-600 focus:ring-blue-600 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500" />
+                            <label for="horizontal-list-radio-debit"
+                                class="w-full py-3 ml-2 text-sm font-medium text-gray-300">Debit</label>
+                        </div>
+                    </li>
+                    <li class="w-full border-b sm:border-b-0 sm:border-r border-gray-600">
+                        <div class="flex items-center pl-3">
+                            <input id="horizontal-list-radio-credit" type="radio" value="CREDIT"
+                                formControlName="operationType" name="list-radio"
+                                class="w-4 h-4 text-blue-600 focus:ring-blue-600 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500" />
+                            <label for="horizontal-list-radio-credit"
+                                class="w-full py-3 ml-2 text-sm font-medium text-gray-300">Credit</label>
+                        </div>
+                    </li>
+                    <li class="w-full border-b sm:border-b-0 sm:border-r border-gray-600">
+                        <div class="flex items-center pl-3">
+                            <input id="horizontal-list-radio-transfer" type="radio" value="TRANSFER"
+                                formControlName="operationType" name="list-radio"
+                                class="w-4 h-4 text-blue-600 focus:ring-blue-600 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500" />
+                            <label for="horizontal-list-radio-transfer"
+                                class="w-full py-3 ml-2 text-sm font-medium text-gray-300">Transfer</label>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div *ngIf="operationFromGroup.value.operationType == 'TRANSFER'">
+                <label for="account-des" class="block mb-2 text-sm font-medium text-white ml-5">Account
+                    Destination</label>
+                <input type="text" formControlName="accountDestination" id="account-des"
+                    placeholder="Account ID # xxxxxxxxxxxx"
+                    class="border text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-600 border-gray-500 placeholder-gray-400 text-white px-5 bg-opacity-20 bg-clip-padding"
+                    style="backdrop-filter: blur(60px)" required />
+            </div>
+            <div>
+                <label for="amount" class="block mb-2 text-sm font-medium text-white ml-5">Amount</label>
+                <input type="number" formControlName="amount" id="amount"
+                    class="border text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-600 border-gray-500 placeholder-gray-400 text-white px-5 bg-opacity-20 bg-clip-padding"
+                    style="backdrop-filter: blur(60px)" required />
+            </div>
+            <div>
+                <label for="desc" class="block mb-2 text-sm font-medium text-white ml-5">Description</label>
+                <input type="text" formControlName="description" id="desc"
+                    class="border text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-600 border-gray-500 placeholder-gray-400 text-white px-5 bg-opacity-20 bg-clip-padding"
+                    style="backdrop-filter: blur(60px)" placeholder="Description" />
+            </div>
+            <div class="flex place-content-evenly">
+                <button type="submit"
+                    class="basis-1/2 px-4 py-2 text-sm font-medium text-center text-white rounded-full focus:ring-4 focus:outline-none bg-blue-600 hover:bg-blue-700 focus:ring-blue-800">
+                    Submit
+                </button>
+                <button type="reset"
+                    class="basis-1/4 px-4 py-2 text-sm font-medium text-center border rounded-full focus:ring-4 focus:outline-none bg-gray-800 text-white border-gray-600 hover:bg-gray-700 hover:border-gray-700 focus:ring-gray-700">
+                    Reset
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<ng-template #failureOrLading>
+    <ng-container *ngIf="errorMessage; else loading">
+        <div class="grow p-4 mb-4 border-2 rounded-lg bg-gray-800 text-red-400 border-red-800 bg-opacity-40 bg-clip-padding"
+            style="backdrop-filter: blur(60px)" role="alert">
+            <div class="flex items-center">
+                <svg aria-hidden="true" class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                <span class="sr-only">Info</span>
+                <h3 class="text-lg font-medium">Error Message for DEV</h3>
+            </div>
+            <div class="mt-2 mb-4 text-sm">{{ errorMessage }}</div>
+        </div>
+    </ng-container>
+    <ng-template #loading>
+        <div class="grow m-2">
+            <div class="bg-gray-800 border border-gray-700 flex items-center justify-around px-6 py-4 rounded-lg whitespace-nowrap text-white bg-opacity-60 bg-clip-padding"
+                style="backdrop-filter: blur(60px)">
+                <div class="h-2 w-40 bg-slate-700 rounded"></div>
+                <div class="h-2 w-40 bg-slate-700 rounded"></div>
+            </div>
+            <div
+                class="relative overflow-y-hidden shadow-md rounded-lg border border-gray-700 mt-5 bg-gray-700 bg-opacity-40 bg-clip-padding">
+                <div class="flex items-center justify-center h-56">
+                    <div role="status">
+                        <svg aria-hidden="true" class="w-8 h-8 mr-2 animate-spin text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" /><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" /></svg>
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+            class="space-y-6 shrink m-2 w-full max-w-md border rounded-lg shadow p-6 bg-gray-800 border-gray-700 bg-opacity-40 bg-clip-padding">
+            <div class="h-2 w-20 m-4 bg-slate-700 rounded"></div>
+            <div class="h-2 w-full bg-slate-700 rounded"></div>
+            <div class="h-2 w-full bg-slate-700 rounded"></div>
+            <div class="h-2 w-full bg-slate-700 rounded"></div>
+            <div class="h-2 w-full bg-slate-700 rounded"></div>
+            <div class="flex place-content-evenly">
+                <div class="px-4 py-2 rounded-lg bg-blue-600 w-40"></div>
+                <div class="px-4 py-2 rounded-lg bg-gray-800 w-20"></div>
+            </div>
+        </div>
+    </ng-template>
+</ng-template>

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable, catchError, throwError } from 'rxjs';
 import { AccountDetails } from '../model/accounts.model';
 import { AccountsService } from '../services/accounts.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-accounts',
@@ -10,22 +11,20 @@ import { AccountsService } from '../services/accounts.service';
   styleUrls: ['./accounts.component.css'],
 })
 export class AccountsComponent {
-  accountFormGroup!: FormGroup;
   currentPage: number = 0;
   pageSize: number = 5;
   accountObservable!: Observable<AccountDetails>;
   operationFromGroup!: FormGroup;
   errorMessage!: string;
+  accountId: string = this.route.snapshot.params['id'];
 
   constructor(
     private fb: FormBuilder,
-    private accountsService: AccountsService
+    private accountsService: AccountsService, private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.accountFormGroup = this.fb.group({
-      accountId: this.fb.control(''),
-    });
+    this.getAccounts();
     this.operationFromGroup = this.fb.group({
       operationType: this.fb.control(null),
       amount: this.fb.control(0),
@@ -34,10 +33,9 @@ export class AccountsComponent {
     });
   }
 
-  handleSearchAccount() {
-    let accountId: string = this.accountFormGroup.value.accountId;
+  getAccounts() {
     this.accountObservable = this.accountsService
-      .getAccountById(accountId, this.currentPage, this.pageSize)
+      .getAccountById(this.accountId, this.currentPage, this.pageSize)
       .pipe(
         catchError((err) => {
           this.errorMessage = err.message;
@@ -48,33 +46,32 @@ export class AccountsComponent {
 
   gotoPage(page: number) {
     this.currentPage = page;
-    this.handleSearchAccount();
+    this.getAccounts();
   }
 
   handleAccountOperation() {
-    let accountId: string = this.accountFormGroup.value.accountId;
     let operationType = this.operationFromGroup.value.operationType;
     let amount: number = this.operationFromGroup.value.amount;
     let description: string = this.operationFromGroup.value.description;
     let accountDestination: string =
       this.operationFromGroup.value.accountDestination;
     if (operationType == 'DEBIT') {
-      this.accountsService.debit(accountId, amount, description).subscribe({
+      this.accountsService.debit(this.accountId, amount, description).subscribe({
         next: (data) => {
           alert('Success Credit');
           this.operationFromGroup.reset();
-          this.handleSearchAccount();
+          this.getAccounts();
         },
         error: (err) => {
           console.log(err);
         },
       });
     } else if (operationType == 'CREDIT') {
-      this.accountsService.credit(accountId, amount, description).subscribe({
+      this.accountsService.credit(this.accountId, amount, description).subscribe({
         next: (data) => {
           alert('Success Debit');
           this.operationFromGroup.reset();
-          this.handleSearchAccount();
+          this.getAccounts();
         },
         error: (err) => {
           console.log(err);
@@ -82,12 +79,12 @@ export class AccountsComponent {
       });
     } else if (operationType == 'TRANSFER') {
       this.accountsService
-        .transfer(accountId, accountDestination, amount, description)
+        .transfer(this.accountId, accountDestination, amount, description)
         .subscribe({
           next: (data) => {
             alert('Success Transfer');
             this.operationFromGroup.reset();
-            this.handleSearchAccount();
+            this.getAccounts();
           },
           error: (err) => {
             console.log(err);

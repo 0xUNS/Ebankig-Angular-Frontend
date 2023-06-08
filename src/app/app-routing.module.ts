@@ -8,8 +8,8 @@ import { CustomerAccountsComponent } from './customer-accounts/customer-accounts
 const routes: Routes = [
   {path: "customers", component: CustomersComponent},
   {path: "new-customer", component: CustomerNewComponent},
-  {path: "customer-accounts/:id", component: CustomerAccountsComponent},
-  {path: "accounts", component: AccountsComponent}
+  {path: "customers/:id", component: CustomerAccountsComponent},
+  {path: "accounts/:id", component: AccountsComponent}
 ];
 
 @NgModule({
