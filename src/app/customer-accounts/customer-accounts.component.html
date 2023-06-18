@@ -80,7 +80,7 @@
         </table>
         <nav class="flex items-center justify-between py-2 px-6" aria-label="Table navigation">
             <span class="text-sm font-normal text-gray-400">Showing <span class="font-semibold text-white">{{customer.currentPage * customer.pageSize + 1}}-{{customer.currentPage * customer.pageSize + customer.currentPageAccounts}}</span> of <span class="font-semibold text-white">{{customer.totalAccounts}}</span></span>
-            <ul *ngIf="customer.totalPages > 1" class="inline-flex items-center -space-x-px">
+            <ul *ngIf="customer.totalPages > 1" class="inline-flex items-center -space-x-px cursor-pointer">
                 <li *ngIf="customer.currentPage > 0">
                     <a (click)="gotoPage(customer.currentPage - 1)" class="block px-3 py-2 ml-0 leading-tight border rounded-l-lg bg-gray-800 border-gray-700 text-gray-400 hover:bg-gray-700 hover:text-white">
                         <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
