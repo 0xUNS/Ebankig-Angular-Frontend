@@ -1,27 +1,25 @@
-# EbankingFrontend
+# Ebanking Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.7.
+![](https://img.icons8.com/?size=20&id=AZOZNnY73haj) [Backend: Ebanking-Spring](https://github.com/0xUNS/Ebanking-Spring-Banckend)
 
-## Development server
+![](https://img.icons8.com/?size=20&id=AZOZNnY73haj) [Frontend: Ebanking-Angular](https://github.com/0xUNS/Ebanking-Angular-Frontend)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+![](https://img.icons8.com/?size=50&id=j9DnICNnlhGk) Angular
 
-## Code scaffolding
+## ![](https://img.icons8.com/?size=30&id=sm8CzMKNcuhi) Development server
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-## Build
+```bash
+npm install
+ng serve
+```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Go to: [localhost:4200](http://localhost:4200/).
 
-## Running unit tests
+# ![](https://img.icons8.com/?size=30&id=GwYlS5m5Goz6) Demo
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+![Angular-WebApp-Presentation](src/assets/images/Angular-WebApp-Presentation.gif)
 
-## Running end-to-end tests
+# ![](https://img.icons8.com/?size=30&id=3FDJsdSpK6cv) Deployment
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+[On Netlify : playful-jalebi-4c1631.netlify.app](https://playful-jalebi-4c1631.netlify.app/)
