@@ -34,11 +34,11 @@
                                 <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap text-white">
                                     {{ operation.id }}
                                 </th>
-                                <td *ngIf="operation.type == 'DEBIT'" class="text-red-300 px-6 py-4">
-                                    <i class="text-lg bi bi-arrow-down"></i> Debit
+                                <td *ngIf="operation.type == 'DEBIT'" class="text-green-300 px-6 py-4">
+                                    <i class="text-lg bi bi-arrow-up"></i> Debit
                                 </td>
-                                <td *ngIf="operation.type == 'CREDIT'" class="text-green-300 px-6 py-4">
-                                    <i class="text-lg bi bi-arrow-up"></i> Credit
+                                <td *ngIf="operation.type == 'CREDIT'" class="text-red-300 px-6 py-4">
+                                    <i class="text-lg bi bi-arrow-down"></i> Credit
                                 </td>
                                 <td *ngIf="operation.type == 'TRANSFER'" class="text-blue-300 px-6 py-4">
                                     <i class="text-lg bi bi-arrow-left-right"></i> Transfer
